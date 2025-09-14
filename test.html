@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Fingerprint Spoof PoC</title>
+  <script src="./spoof.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 24px; }
+    pre { background:#f4f4f4; padding:12px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <h1>Fingerprint Spoof Proof-of-Concept</h1>
+  <p>Values read by JavaScript:</p>
+  <pre id="out">loading...</pre>
+
+  <script>
+    async function show() {
+      const out = document.getElementById('out');
+      const data = {
+        maxTouchPoints: navigator.maxTouchPoints,
+        screen: {
+          width: window.screen.width,
+          height: window.screen.height,
+          colorDepth: window.screen.colorDepth
+        },
+        battery: null
+      };
+      if (navigator.getBattery) {
+        try {
+          const b = await navigator.getBattery();
+          data.battery = {
+            charging: b.charging,
+            chargingTime: b.chargingTime,
+            dischargingTime: b.dischargingTime,
+            level: b.level
+          };
+        } catch (e) {
+          data.battery = { error: String(e) };
+        }
+      } else {
+        data.battery = { supported: false };
+      }
+      out.textContent = JSON.stringify(data, null, 2);
+    }
+    show();
+  </script>
+</body>
+</html>
